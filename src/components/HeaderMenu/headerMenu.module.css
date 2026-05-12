@@ -1,0 +1,222 @@
+.chevron {
+  display: inline-block;
+  width: 10px;
+  height: 6px;
+  margin-left: 0.35rem;
+  vertical-align: middle;
+  opacity: 0.65;
+}
+
+.chevronDown {
+  transition: transform 0.15s ease;
+}
+
+.chevronPushEnd {
+  transform: rotate(-90deg);
+}
+
+.desktopNavSticky {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+
+  transform: translateY(0);
+  opacity: 1;
+  visibility: visible;
+
+  transition:
+    transform 0.55s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.35s ease;
+
+  will-change: transform;
+}
+
+.desktopNavStickyHidden {
+  transform: translateY(-110%);
+  opacity: 0;
+  visibility: hidden;
+
+  transition:
+    transform 0.55s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.35s ease;
+
+  pointer-events: none;
+}
+
+.desktopNavInner {
+  background: var(--paper, #fff);
+  box-shadow: 0 2px 0 var(--text-color-secondary);
+}
+
+.desktopNavContainer {
+  --desktop-nav-padding-y: 1.25rem;
+
+  display: flex;
+  justify-content: center;
+  padding: var(--desktop-nav-padding-y) 0;
+}
+
+.desktopList {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem 1.5rem;
+  list-style: none;
+}
+
+.desktopItem {
+  position: relative;
+  line-height: 16px;
+}
+
+.desktopItemWithMenu::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 100%;
+  z-index: 109;
+  width: max(100%, 200px);
+  min-width: 200px;
+  height: var(--desktop-nav-padding-y);
+  pointer-events: auto;
+}
+
+.desktopLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  padding: 0;
+  border: none;
+  border-radius: 4px;
+  background: none;
+  font: inherit;
+  font-size: 0.9375rem;
+  color: inherit;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: default;
+  line-height: 16px;
+}
+
+a.desktopLink {
+  cursor: pointer;
+}
+
+.dropdown {
+  position: absolute;
+  top: calc(100% + var(--desktop-nav-padding-y));
+  left: 50%;
+  z-index: 110;
+  min-width: 200px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  background: var(--paper, #fff);
+  border: 1px solid var(--text-color-secondary);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+  transform: translateX(-50%);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition:
+    opacity 0.12s ease,
+    visibility 0.12s ease;
+}
+
+.desktopItem:hover > .dropdown,
+.desktopItem:focus-within > .dropdown {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.dropdown > li:hover .dropdownLink,
+.dropdown > li:focus-within .dropdownLink {
+  color: var(--text-color-gray);
+}
+
+.dropdownLabel {
+  display: inline-block;
+  transition: transform 0.15s ease;
+}
+
+.dropdown > li:hover .dropdownLabel,
+.dropdown > li:focus-within .dropdownLabel {
+  transform: translateX(10px);
+}
+
+.dropdownLink {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0.5rem 1rem;
+  border: none;
+  background: transparent;
+  box-sizing: border-box;
+  font: inherit;
+  font-size: 13px;
+  color: inherit;
+  text-align: left;
+  text-decoration: none;
+  cursor: default;
+}
+
+a.dropdownLink {
+  cursor: pointer;
+}
+
+.mobileRoot {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.mobileIndent {
+  list-style: none;
+  margin: 0.2rem 0 0;
+  padding: 0 0 0 0.75rem;
+  border-left: 1px solid var(--text-color-secondary);
+}
+
+.mobileLink {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  width: 100%;
+  padding: 0.5rem 0.5rem;
+  margin: 0 -0.5rem;
+  border: none;
+  border-radius: 4px;
+  background: transparent;
+  font: inherit;
+  font-size: 15px;
+  color: inherit;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+.mobileIndent .mobileLink {
+  font-size: 13px;
+}
+
+a.mobileLink {
+  display: block;
+  cursor: pointer;
+}
+
+.mobileLink:hover,
+.mobileLink:focus-visible {
+  background: rgba(0, 0, 0, 0.06);
+  outline: none;
+}
+
+@media (max-width: 1024px) {
+  .desktopNavSticky {
+    display: none;
+  }
+}

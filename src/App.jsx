@@ -1,103 +1,90 @@
-import { useState, useEffect, useRef } from "react";
-import SiteHeader from "./components/SiteHeader/SiteHeader";
-import DesktopNav from "./components/DesktopNav/DesktopNav";
-import mainStyles from "./components/Main/Main.module.css";
-import SkeletonCard from "./components/SkeletonCard/SkeletonCard";
-import PostCard from "./components/PostCard/PostCard";
-import PostPopup from "./components/PostPopup/PostPopup";
-import MobileNav, { NAV_ITEMS } from "./components/MobileNav/MobileNav";
-import useStickyNav from "./hooks/useStickyNav";
+import { useEffect, useMemo, useRef, useState } from "react";
+import Header from "./components/Header";
+import Sidebar from "./components/Sidebar";
+import { PostCard } from "./components/Posts/PostCard";
+import { PostSkeletonGrid } from "./components/Posts/PostSkeleton";
+import postsStyles from "./components/Posts/posts.module.css";
+import { DesktopNav } from "./components/HeaderMenu";
+import { useStickyNavBar } from "./hooks/useStickyNavBar";
 
 const DATA_URL = "https://cloud.codesupply.co/endpoint/react/data.json";
+const SKELETON_COUNT = 6;
 
-export default function App() {
+function App() {
+  const [search, setSearch] = useState("");
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [search, setSearch] = useState("");
-  const [activePost, setActivePost] = useState(null);
-  const [mobileOpen, setMobileOpen] = useState(false);
-
   const headerRef = useRef(null);
-  const navHidden = useStickyNav(headerRef);
+  const hidden = useStickyNavBar();
 
   useEffect(() => {
     const controller = new AbortController();
+    setLoading(true);
+    setError(null);
 
-    fetch(DATA_URL, { signal: controller.signal })
-      .then((r) => {
-        if (!r.ok) throw new Error(`HTTP ${r.status}`);
-        return r.json();
-      })
-      .then((data) => {
-        setPosts(Array.isArray(data) ? data : []);
-        setLoading(false);
-      })
-      .catch((e) => {
-        if (e.name !== "AbortError") {
-          setError("Не удалось загрузить посты. Попробуйте обновить страницу.");
+    (async () => {
+      try {
+        const res = await fetch(DATA_URL, { signal: controller.signal });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+        if (!controller.signal.aborted) {
+          setPosts(Array.isArray(data) ? data : []);
           setLoading(false);
         }
-      });
+      } catch (e) {
+        if (e.name === "AbortError") return;
+        setError("Could not load posts. Please refresh the page.");
+        setLoading(false);
+      }
+    })();
 
     return () => controller.abort();
   }, []);
 
-  const query = search.trim().toLowerCase();
-  const filtered = query
-    ? posts.filter(
-        (p) =>
-          p.title?.toLowerCase().includes(query) ||
-          p.text?.toLowerCase().includes(query),
-      )
-    : posts;
+  const filtered = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    if (!q) return posts;
+    return posts.filter((p) =>
+      [p.title, p.text, p.tags, p.autor].some((field) =>
+        String(field || "")
+          .toLowerCase()
+          .includes(q),
+      ),
+    );
+  }, [posts, search]);
 
   return (
-    <>
-      <SiteHeader
-        headerRef={headerRef}
-        mobileOpen={mobileOpen}
-        onOpenMobileNav={() => setMobileOpen(true)}
+    <div className="App">
+      <Header
         search={search}
-        onSearchChange={setSearch}
+        setSearch={setSearch}
+        onOpenMenu={() => setSidebarOpen(true)}
+        headerRef={headerRef}
       />
+      <DesktopNav hidden={hidden} />
+      <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
-      <DesktopNav hidden={navHidden} items={NAV_ITEMS} />
-
-      <MobileNav isOpen={mobileOpen} onClose={() => setMobileOpen(false)} />
-
-      <main className={mainStyles.main}>
+      <main className={postsStyles.feed}>
         {error ? (
-          <p className={mainStyles.error}>{error}</p>
-        ) : loading ? (
-          <div className={mainStyles.postsGrid}>
-            {Array.from({ length: 6 }).map((_, i) => (
-              <SkeletonCard key={i} />
-            ))}
-          </div>
+          <p className={postsStyles.error} role="alert">
+            {error}
+          </p>
         ) : (
-          <div className={mainStyles.postsGrid}>
-            {filtered.length === 0 ? (
-              <div className={mainStyles.noResults}>
-                <p>Ничего не найдено</p>
-                <p>Попробуйте другой запрос</p>
-              </div>
+          <ul className={postsStyles.grid} aria-busy={loading}>
+            {loading ? (
+              <PostSkeletonGrid count={SKELETON_COUNT} />
             ) : (
-              filtered.map((post, i) => (
-                <PostCard
-                  key={post.id ?? i}
-                  post={post}
-                  onClick={setActivePost}
-                />
+              filtered.map((post, index) => (
+                <PostCard key={`${post.title}-${index}`} post={post} />
               ))
             )}
-          </div>
+          </ul>
         )}
       </main>
-
-      {activePost && (
-        <PostPopup post={activePost} onClose={() => setActivePost(null)} />
-      )}
-    </>
+    </div>
   );
 }
+
+export default App;
