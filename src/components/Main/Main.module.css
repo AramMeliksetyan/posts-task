@@ -1,0 +1,37 @@
+.main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 3rem 2rem 4rem;
+}
+
+.postsGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--col-gap);
+}
+
+.noResults {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: var(--ink-soft);
+  width: 100%;
+}
+
+.noResults p:first-child {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.25rem;
+  color: var(--ink-mid);
+  margin-bottom: 0.5rem;
+}
+
+.error {
+  color: var(--accent);
+  text-align: center;
+  padding: 3rem;
+}
+
+@media (max-width: 560px) {
+  .main {
+    padding: 2rem 1rem 3rem;
+  }
+}
