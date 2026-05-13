@@ -23,6 +23,12 @@ export function DesktopNav({
   items?: NavItem[];
   hidden: boolean;
 }) {
+  const [hoverMenuId, setHoverMenuId] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (hidden) setHoverMenuId(null);
+  }, [hidden]);
+
   return (
     <div
       className={`${
@@ -38,12 +44,18 @@ export function DesktopNav({
                   <li
                     key={item.id}
                     className={`${styles.desktopItem} ${styles.desktopItemWithMenu}`}
+                    onMouseEnter={() => setHoverMenuId(item.id)}
+                    onMouseLeave={() => setHoverMenuId(null)}
                   >
                     <span className={styles.desktopLink}>
                       {item.label}
                       <ChevronDown />
                     </span>
-                    <ul className={styles.dropdown}>
+                    <ul
+                      className={`${styles.dropdown} ${
+                        hoverMenuId === item.id ? styles.dropdownVisible : ""
+                      }`.trim()}
+                    >
                       {item.children.map((child) => (
                         <li key={child.id}>
                           <a href={child.href} className={styles.dropdownLink}>

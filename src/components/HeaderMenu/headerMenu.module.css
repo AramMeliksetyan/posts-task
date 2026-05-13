@@ -97,7 +97,8 @@
   text-decoration: none;
   white-space: nowrap;
   cursor: default;
-  line-height: 16px;
+  line-height: 1rem;
+  font-weight: 500;
 }
 
 a.desktopLink {
@@ -125,8 +126,7 @@ a.desktopLink {
     visibility 0.12s ease;
 }
 
-.desktopItem:hover > .dropdown,
-.desktopItem:focus-within > .dropdown {
+.dropdownVisible {
   opacity: 1;
   visibility: visible;
   pointer-events: auto;

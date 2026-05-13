@@ -1,4 +1,5 @@
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
+import { SearchInput } from "../SearchInput";
 import styles from "./header.module.css";
 import burgerIcon from "../../assets/Combined Shape.svg";
 import Logo from "../../assets/logo.svg";
@@ -89,30 +90,20 @@ const Header = ({ search, setSearch, onOpenMenu, headerRef }: HeaderProps) => {
                       <img src={SearchIcon} alt="search-icon" />
                     </button>
                   ) : (
-                    <div className={styles.searchBar} role="search">
-                      <img
-                        src={SearchIcon}
-                        alt=""
-                        className={styles.searchBarIcon}
-                        aria-hidden
-                      />
-                      <input
-                        ref={searchInputRef}
-                        id="header-search-input"
-                        className={styles.searchInput}
-                        type="search"
-                        placeholder="Search posts…"
-                        value={search}
-                        onChange={(e) => setSearch(e.target.value)}
-                        aria-label="Search posts"
-                        onKeyDown={(e) => {
-                          if (e.key === "Escape") {
-                            e.preventDefault();
-                            setSearchOpen(false);
-                          }
-                        }}
-                      />
-                    </div>
+                    <SearchInput
+                      id="header-search-input"
+                      value={search}
+                      onChange={setSearch}
+                      inputRef={searchInputRef}
+                      placeholder="Search posts…"
+                      aria-label="Search posts"
+                      onKeyDown={(e) => {
+                        if (e.key === "Escape") {
+                          e.preventDefault();
+                          setSearchOpen(false);
+                        }
+                      }}
+                    />
                   )}
                 </div>
               </div>
