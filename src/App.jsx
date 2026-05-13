@@ -1,14 +1,11 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Header from "./components/Header";
 import Sidebar from "./components/Sidebar";
-import { PostCard } from "./components/Posts/PostCard";
-import { PostSkeletonGrid } from "./components/Posts/PostSkeleton";
-import postsStyles from "./components/Posts/posts.module.css";
+import { PostsFeed } from "./components/Posts/PostsFeed";
 import { DesktopNav } from "./components/HeaderMenu";
 import { useStickyNavBar } from "./hooks/useStickyNavBar";
 
 const DATA_URL = "https://cloud.codesupply.co/endpoint/react/data.json";
-const SKELETON_COUNT = 6;
 
 function App() {
   const [search, setSearch] = useState("");
@@ -43,18 +40,6 @@ function App() {
     return () => controller.abort();
   }, []);
 
-  const filtered = useMemo(() => {
-    const q = search.trim().toLowerCase();
-    if (!q) return posts;
-    return posts.filter((p) =>
-      [p.title, p.text, p.tags, p.autor].some((field) =>
-        String(field || "")
-          .toLowerCase()
-          .includes(q),
-      ),
-    );
-  }, [posts, search]);
-
   return (
     <div className="App">
       <Header
@@ -66,23 +51,12 @@ function App() {
       <DesktopNav hidden={hidden} />
       <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
-      <main className={postsStyles.feed}>
-        {error ? (
-          <p className={postsStyles.error} role="alert">
-            {error}
-          </p>
-        ) : (
-          <ul className={postsStyles.grid} aria-busy={loading}>
-            {loading ? (
-              <PostSkeletonGrid count={SKELETON_COUNT} />
-            ) : (
-              filtered.map((post, index) => (
-                <PostCard key={`${post.title}-${index}`} post={post} />
-              ))
-            )}
-          </ul>
-        )}
-      </main>
+      <PostsFeed
+        error={error}
+        loading={loading}
+        posts={posts}
+        search={search}
+      />
     </div>
   );
 }

@@ -53,7 +53,11 @@ const Header = ({ search, setSearch, onOpenMenu, headerRef }: HeaderProps) => {
       <div className={styles.shell}>
         <div ref={topRef} className={styles.top}>
           <div className={styles.container}>
-            <div className={styles.main}>
+            <div
+              className={`${styles.main} ${
+                searchOpen ? styles.mainSearchOpen : ""
+              }`.trim()}
+            >
               <div className={styles.left}>
                 <button
                   type="button"
@@ -64,7 +68,11 @@ const Header = ({ search, setSearch, onOpenMenu, headerRef }: HeaderProps) => {
                   <img src={burgerIcon} alt="burger-icon" />
                 </button>
               </div>
-              <div className={styles.center}>
+              <div
+                className={`${styles.center} ${
+                  searchOpen ? styles.centerHiddenWhenSearchOpen : ""
+                }`.trim()}
+              >
                 <img src={Logo} alt="github logo" className={styles.logo} />
               </div>
               <div className={styles.right}>
@@ -82,11 +90,18 @@ const Header = ({ search, setSearch, onOpenMenu, headerRef }: HeaderProps) => {
                     </button>
                   ) : (
                     <div className={styles.searchBar} role="search">
+                      <img
+                        src={SearchIcon}
+                        alt=""
+                        className={styles.searchBarIcon}
+                        aria-hidden
+                      />
                       <input
                         ref={searchInputRef}
                         id="header-search-input"
+                        className={styles.searchInput}
                         type="search"
-                        placeholder="Search…"
+                        placeholder="Search posts…"
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
                         aria-label="Search posts"

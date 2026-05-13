@@ -1,6 +1,5 @@
 .feed {
   width: 80%;
-  max-width: 1200px;
   margin: 0 auto;
   padding: 3rem 0;
   text-align: left;
@@ -32,6 +31,7 @@
 @media (max-width: 600px) {
   .feed {
     width: 92%;
+    padding: 0;
   }
 
   .grid > .card {
