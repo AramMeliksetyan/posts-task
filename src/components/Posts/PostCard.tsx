@@ -1,9 +1,14 @@
+import { Post } from "../../interfaces/posts.interface";
 import styles from "./posts.module.css";
+
+interface PostCardProps {
+  post: Post;
+}
 
 const SIZES =
   "(max-width: 600px) 92vw, (max-width: 900px) calc((min(100vw * 0.8, 1200px) - 32px) / 2), calc((min(100vw * 0.8, 1200px) - 6rem) / 3)";
 
-export function PostCard({ post }) {
+export function PostCard({ post }: PostCardProps) {
   const src = post.img || post.img_2x;
 
   let srcSet;

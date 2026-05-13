@@ -2,10 +2,18 @@ import { useDeferredValue, useMemo } from "react";
 import { PostCard } from "./PostCard";
 import { PostSkeletonGrid } from "./PostSkeleton";
 import postsStyles from "./posts.module.css";
+import { Post } from "../../interfaces/posts.interface";
 
 const SKELETON_COUNT = 6;
 
-export function PostsFeed({ error, loading, posts, search }) {
+interface PostsFeedProps {
+  error: string | null;
+  loading: boolean;
+  posts: Post[];
+  search: string;
+}
+
+export function PostsFeed({ error, loading, posts, search }: PostsFeedProps) {
   const deferredSearch = useDeferredValue(search);
   const isSearchStale = search !== deferredSearch;
 
